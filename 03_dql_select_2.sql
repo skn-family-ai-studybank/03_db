@@ -84,7 +84,8 @@ from
 # -> employee (23행), department(9행)
 # -> join 결과 : 21행
 # 원인: employee.dept_code에 값이 없는(NULL)
-#   하동운, 이오리 두 행의 조인 결과 : NULL
+#   하동운, 이오리 두 행이 조인 결과(relation) 포함되지 않음
+
 select
     a.EMP_ID,
     a.EMP_NAME,
@@ -138,6 +139,107 @@ on
 order by
     a.EMP_ID;
 
-# cross join
+
+### menudb 계정으로 변경
+# cross join(카테시안곱, 곱집합)
+# 조인 되는 두 테이블의 모든 경우의 수를 처리한 것
+select count(*) from tbl_menu; # 22행
+select count(*) from tbl_category; # 12행
+
+# 22 * 12 = 264
+select
+    *
+from
+    tbl_menu
+cross join
+    tbl_category;
+
+
+# self join
+# - 하나의 테이블에서
+#   한 행이 다른 행을 참조하는 관계가 있는 경우
+#   같은 테이블 끼리 조인하는 것
+# [tip] 똑같은 테이블이 2개 있다고 생각하면 쉬움
+
+
+select
+    child.category_code,
+    child.category_name,
+    parent.category_name as "상위 카테고리"
+from
+    tbl_category child
+join
+    tbl_category parent
+on
+    child.ref_category_code = parent.category_code
+where
+    parent.category_name = '식사';
 
 # multiple join
+# - 3개 이상의 테이블을 조인하는 것
+# - join 순서 매우 중요함
+# ex) a join b join c
+# -> (a+b) join c
+# -> (a+b+c)
+
+
+#
+select * from tbl_order;
+select * from tbl_order_menu;
+select * from tbl_menu;
+
+
+
+select
+    *
+from
+    tbl_order o
+join
+    tbl_order_menu om
+on
+    o.order_code = om.order_code # o,om 합쳐진 realation 생성
+join
+    tbl_menu m
+on
+    om.menu_code = m.menu_code;
+
+
+# employeedb 로 변경
+select * from EMPLOYEE;
+select * from DEPARTMENT;
+select * from location;
+
+
+select
+    *
+from
+    EMPLOYEE e
+join
+    department d
+on
+    e.DEPT_CODE = d.DEPT_ID
+join
+    location l
+on
+    d.LOCATION_ID = l.LOCAL_CODE;
+
+
+
+
+
+
+select
+    *
+from
+    EMPLOYEE e
+join
+    location l
+on
+    d.LOCATION_ID = l.LOCAL_CODE
+join
+    department d
+on
+    e.DEPT_CODE = d.DEPT_ID;
+
+
+
